@@ -2,7 +2,11 @@
 #include <imgui/imgui.h>
 #include "Level 1.h"
 
+#include "../Player.h"
 int mode = 0;
+
+Player *player1;
+Player *player2;
 
 bool ShowFrameworkMenu();
 
@@ -12,7 +16,14 @@ void Level_1_Load()
 
 void Level_1_Init()
 {
+    player1 = new Player();
+    AEGfxTriStart();
+    player1->posComponent->setPosition(200, 0);
+        AEGfxTriAdd(0, 0, AEGFX, 0, 0, 
+                100, 0, 5, 0, 0,
+                100, 100, 2, 0, 0 );
 }
+
 
 void Level_1_Update()
 {
@@ -25,6 +36,11 @@ void Level_1_Update()
 
 void Level_1_Render()
 {
+    for (auto tri : AEGfxGetAllocatedTrilist())
+    {
+        AEGfxTriDraw(tri);
+    }
+   
     // clear frame buffer, do not delete this code
     AEGfxSetClearColor(AEGfxColor(0, 0, 0));
     AEGfxClearBuffer();
@@ -37,6 +53,7 @@ void Level_1_Free()
 
 void Level_1_Unload()
 {
+    delete(player1);
 }
 
 void KeyboardInput()

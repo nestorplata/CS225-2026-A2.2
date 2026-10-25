@@ -34,8 +34,8 @@
     <ClCompile Include="src\Components\render_component.cc">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionEventManager.h">
-      <Filter>Framework</Filter>
+    <ClCompile Include="src\Player.h">
+      <Filter>Pong</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,5 +61,11 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="InputEventManager.h" />
+    <ClInclude Include="src\Pong\CollisionEventManager.h">
+      <Filter>Pong</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pong\InputEventManager.h">
+      <Filter>Pong</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
