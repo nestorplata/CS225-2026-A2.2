@@ -34,7 +34,7 @@
     <ClCompile Include="src\Components\render_component.cc">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.h">
+    <ClCompile Include="src\Pong\Ball.h">
       <Filter>Pong</Filter>
     </ClCompile>
   </ItemGroup>
@@ -67,5 +67,9 @@
     <ClInclude Include="src\Pong\InputEventManager.h">
       <Filter>Pong</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pong\Player.h">
+      <Filter>Pong</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pong\Singleton.h" />
   </ItemGroup>
 </Project>

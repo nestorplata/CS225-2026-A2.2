@@ -26,7 +26,7 @@
     <ClCompile Include="src\Framework\event_handlers.cc" />
     <ClCompile Include="src\Levels\Level 1.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Player.h" />
+    <ClCompile Include="src\Pong\Ball.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputEventManager.h" />
@@ -39,6 +39,8 @@
     <ClInclude Include="src\Levels\Level 1.h" />
     <ClInclude Include="src\Pong\CollisionEventManager.h" />
     <ClInclude Include="src\Pong\InputEventManager.h" />
+    <ClInclude Include="src\Pong\Player.h" />
+    <ClInclude Include="src\Pong\Singleton.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
