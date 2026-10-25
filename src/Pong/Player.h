@@ -94,9 +94,6 @@ public:
 	{
 		//renderComponent->Draw();
 		AEGfxRect(posComponent->getX(), posComponent->getY(), 0, width, height, AE_COLORS_RED);
-
-
-
 	}
 	
 	void Move()

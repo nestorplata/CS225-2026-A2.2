@@ -17,10 +17,13 @@ int mode = 0;
 Player *player1;
 Player *player2;
 Ball* ball;
-InputEventManager &EventManager = InputEventManager::instance();
+InputEventManager &InputManager = InputEventManager::instance();
+CollisionEventManager& CollisionManager = CollisionEventManager::instance();
 
 OnMoveEvent onMoveEvent;
 OnMoveUpdateEvent UpdateMoveEvent;
+OnCollisionEvent PlayerBallcollisionEvent;
+
 
 const static int PLAYER_START_POS =350;
 
@@ -38,12 +41,24 @@ void Level_1_Init()
     ball = new Ball();
     player1->posComponent->setPosition(-PLAYER_START_POS, 0);
     player2->posComponent->setPosition(PLAYER_START_POS, 0);
-    EventManager.registerEventHandler(player1->eventOnMoveChange);
-    EventManager.registerEventHandler(player1->eventOnMoveUpdate);
+    InputManager.registerEventHandler(player1->eventOnMoveChange);
+    InputManager.registerEventHandler(player1->eventOnMoveUpdate);
+    CollisionManager.registerEventHandler(ball->eventOnMoveUpdate);
+
+
 
 }
 
+static bool CheckCollision(Player* player, Ball* ball, AEContact* pResult)
+{
+    return   AEStaticRectToStaticCircle(&AEVec2(player->posComponent->getX(), player->posComponent->getY()),
+        player->width, player->height,
+        &AEVec2(ball->posComponent->getX(), ball->posComponent->getY()), 
+        ball->Radius, 
+        pResult);
 
+
+}
 void Level_1_Update()
 {
     
@@ -56,12 +71,16 @@ void Level_1_Update()
     KeyboardInput();
     bool guiActive = ShowFrameworkMenu();
 
+    
+    
 
+
+
+    CheckCollision(player1, ball, )
 }
 
 void Level_1_Render()
 {
-    player1->Draw();
     ball->Draw();
     player2->Draw();
 
@@ -102,12 +121,10 @@ bool AEInputKeyChange(const char key, Action* ActionType)
 void KeyboardInput()
 {
     //std::cout << AEInputKeyTriggered('W');
-    if (AEInputKeyChange('W', onMoveEvent.MovingUp)) EventManager.notifyEvent(&onMoveEvent);
-    if (AEInputKeyChange('S', onMoveEvent.MovingDown)) EventManager.notifyEvent(&onMoveEvent);
+    if (AEInputKeyChange('W', onMoveEvent.MovingUp)) InputManager.notifyEvent(&onMoveEvent);
+    if (AEInputKeyChange('S', onMoveEvent.MovingDown)) InputManager.notifyEvent(&onMoveEvent);
 
-    if (AEInputKeyPressed('W') || AEInputKeyPressed('S')) EventManager.notifyEvent(&UpdateMoveEvent);
-    
-    //if (AEInputKeyPressed('S')||AEInputKeyPressed('W')) EventManager.notifyEvent()
+    if (AEInputKeyPressed('W') || AEInputKeyPressed('S')) InputManager.notifyEvent(&UpdateMoveEvent);
     if (AEInputKeyTriggered('R'))
         AESetGameStateNext(AE_GS_RESTART);
     if (AEInputKeyTriggered('Q') && AEInputKeyPressed(AE_KEY_CTRL))
