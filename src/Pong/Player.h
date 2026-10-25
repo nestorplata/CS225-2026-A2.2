@@ -50,12 +50,14 @@ public:
 
 
 	EventHandler<Player, OnMoveEvent>* eventOnMoveChange;
+	EventHandler<Player, OnMoveUpdateEvent>* eventOnMoveUpdate;
+
 	PositionComponent* posComponent = nullptr;
 	RenderComponent* renderComponent = nullptr;
-	EventHandler<Player, OnMoveUpdateEvent>* eventOnMoveUpdate;
 
 	float width =25.f;
 	float height = 200.f;
+	AEVec2 simplePos;
 
 	AEVec2 velocity;
 	AEVec2 speed = AEVec2(0,200);
@@ -69,8 +71,7 @@ public:
 	Player()
 	{
 		playableRange = AEGetSysWindowHeight() / 2 - height/2;
-		eventOnMoveChange = new EventHandler<Player, OnMoveEvent>(this, &Player::OnMovementChange);
-		eventOnMoveUpdate = new EventHandler<Player, OnMoveUpdateEvent>(this, &Player::OnMovementUpdate);
+
 		posComponent = new PositionComponent(100, 100);
 		renderComponent = new RenderComponent();
 		Init();
@@ -125,6 +126,8 @@ public:
 
 	~Player()
 	{
+		delete( eventOnMoveChange);
+		delete(eventOnMoveUpdate);
 	}
 
 

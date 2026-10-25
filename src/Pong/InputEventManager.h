@@ -3,17 +3,15 @@
 #include "Singleton.h"
 
 
-class CollisionEvent :public Event
-{
 
-
-};
-
-class InputEventManager : public EventManager,public  Singleton<InputEventManager>
+class InputEventManager : public EventManager
 {
 private:
 
 public:
+	InputEventManager() {};
+	
+
 	void update() override
 	{
 

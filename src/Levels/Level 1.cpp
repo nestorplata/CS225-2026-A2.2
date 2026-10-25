@@ -17,8 +17,8 @@ int mode = 0;
 Player *player1;
 Player *player2;
 Ball* ball;
-InputEventManager &InputManager = InputEventManager::instance();
-CollisionEventManager& CollisionManager = CollisionEventManager::instance();
+InputEventManager InputManager;
+CollisionEventManager CollisionManager;
 
 OnMoveEvent onMoveEvent;
 OnMoveUpdateEvent UpdateMoveEvent;
@@ -36,24 +36,34 @@ void Level_1_Load()
 
 void Level_1_Init()
 {
+
     player1 = new Player();
     player2 = new Player();
     ball = new Ball();
     player1->posComponent->setPosition(-PLAYER_START_POS, 0);
     player2->posComponent->setPosition(PLAYER_START_POS, 0);
+
+    player1->eventOnMoveChange = new EventHandler<Player, OnMoveEvent>(player1, &Player::OnMovementChange);
+    player1->eventOnMoveUpdate = new EventHandler<Player, OnMoveUpdateEvent>(player1, &Player::OnMovementUpdate);
+    InputManager = InputEventManager();
+    CollisionManager = CollisionEventManager();
+
     InputManager.registerEventHandler(player1->eventOnMoveChange);
     InputManager.registerEventHandler(player1->eventOnMoveUpdate);
-    CollisionManager.registerEventHandler(ball->eventOnMoveUpdate);
+    CollisionManager.registerEventHandler(ball->EventHandlerOnCollisionRect);
 
-
+    ball->posComponent;
 
 }
 
 static bool CheckCollision(Player* player, Ball* ball, AEContact* pResult)
 {
-    return   AEStaticRectToStaticCircle(&AEVec2(player->posComponent->getX(), player->posComponent->getY()),
+    player->simplePos = AEVec2(player->posComponent->getX(), player->posComponent->getY());
+    ball->simplePos = AEVec2(ball->posComponent->getX(), ball->posComponent->getY());
+
+    return   AEStaticRectToStaticCircle(&player->simplePos,
         player->width, player->height,
-        &AEVec2(ball->posComponent->getX(), ball->posComponent->getY()), 
+        &ball->simplePos,
         ball->Radius, 
         pResult);
 
@@ -65,22 +75,27 @@ void Level_1_Update()
 
     player1->Update();
     player2->Update();
-    ball ->Update();
+    ball->Update();
+    if (CheckCollision(player1, ball, PlayerBallcollisionEvent.pResult))
+        CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+
+    if (CheckCollision(player2, ball, PlayerBallcollisionEvent.pResult))        
+        CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+
 
     // core keyboard shortcuts and GUI, do not delete this code!
-    KeyboardInput();
-    bool guiActive = ShowFrameworkMenu();
+        KeyboardInput();
+        bool guiActive = ShowFrameworkMenu();
+
+
+
 
     
-    
-
-
-
-    CheckCollision(player1, ball, )
 }
 
 void Level_1_Render()
 {
+    player1->Draw();
     ball->Draw();
     player2->Draw();
 
@@ -93,6 +108,7 @@ void Level_1_Free()
 {
     delete(player1);
     delete(player2);
+    delete(ball);
 
 }
 

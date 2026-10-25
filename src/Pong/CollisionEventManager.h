@@ -7,13 +7,22 @@ class OnCollisionEvent :public Event
 public:
 	std::string ObjectName;
 	AEContact* pResult = nullptr;
+public:
+	OnCollisionEvent()
+	{
+		Event::Event();
+		pResult = new AEContact();
+	}
+
 };
 
-class CollisionEventManager : public EventManager, public Singleton<CollisionEventManager>
+class CollisionEventManager : public EventManager
 {
 private:
 
 public:
+	CollisionEventManager() {};
+
 	void update() override{};
 
 };
