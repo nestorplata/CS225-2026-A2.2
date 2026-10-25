@@ -34,6 +34,9 @@
     <ClCompile Include="src\Components\render_component.cc">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionEventManager.h">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Levels\Level 1.h">
@@ -57,5 +60,6 @@
     <ClInclude Include="src\Framework\event_handlers.hh">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="InputEventManager.h" />
   </ItemGroup>
 </Project>
