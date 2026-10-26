@@ -3,43 +3,11 @@
 #include "../Components/position_component.hh"
 #include "../Components/render_component.hh"
 #include "../Framework/event_handlers.hh"
+#include "../Pong/InputEventManager.h"
+#include "../Pong/CollisionEventManager.h"
+
 #include <AEEngine.h>
 
-
-struct Action
-{
-	bool IsActionHappening;
-};
-
-class OnMoveEvent : public Event
-{
-private:
-
-public:
-	Action *MovingUp;
-	Action *MovingDown;
-
-
-public:
-
-	OnMoveEvent()
-	{
-		MovingUp = new Action();
-		MovingDown = new Action();
-	}
-
-
-	~OnMoveEvent()
-	{
-		delete(MovingUp);
-		delete(MovingDown);
-	}
-
-};
-
-class OnMoveUpdateEvent : public Event
-{
-};
 
 class Player  : public Entity{
 private:
@@ -49,8 +17,9 @@ private:
 public:
 
 
-	EventHandler<Player, OnMoveEvent>* eventOnMoveChange;
-	EventHandler<Player, OnMoveUpdateEvent>* eventOnMoveUpdate;
+	EventHandler<Player, OnInputChangeEvent>* eventOnMoveChange;
+
+	EventHandler<Player, UpdateEvent>* eventOnMoveUpdate;
 
 	PositionComponent* posComponent = nullptr;
 	RenderComponent* renderComponent = nullptr;
@@ -113,16 +82,20 @@ public:
 
 	}
 
-	void OnMovementChange(OnMoveEvent* event)
+	void OnMovementChange(OnInputChangeEvent* event)
 	{
 		velocity = AEVec2(speed.x,
 			speed.y * ((int)event->MovingUp->IsActionHappening - (int)event->MovingDown->IsActionHappening));
 	}
-	void OnMovementUpdate(OnMoveUpdateEvent* event)
+
+	void OnMovementUpdate(UpdateEvent* event)
 	{
 		
 		Move();
 	}
+
+
+
 
 	~Player()
 	{

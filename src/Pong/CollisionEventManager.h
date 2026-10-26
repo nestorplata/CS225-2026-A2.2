@@ -10,11 +10,17 @@ public:
 public:
 	OnCollisionEvent()
 	{
-		Event::Event();
+		Event();
 		pResult = new AEContact();
 	}
-
 };
+
+class OnTriggerEvent :public Event
+{
+public:
+	PositionComponent* posComponent;
+};
+
 
 class CollisionEventManager : public EventManager
 {

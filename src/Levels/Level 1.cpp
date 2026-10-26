@@ -20,9 +20,17 @@ Ball* ball;
 InputEventManager InputManager;
 CollisionEventManager CollisionManager;
 
-OnMoveEvent onMoveEvent;
-OnMoveUpdateEvent UpdateMoveEvent;
+OnInputChangeEvent onMoveEvent;
+UpdateEvent UpdateMoveEvent;
 OnCollisionEvent PlayerBallcollisionEvent;
+
+OnTriggerEvent StartFollowEvent;
+OnTriggerEvent DuringFollowEvent;
+OnTriggerEvent StopFollowEvent;
+
+
+OnCollisionEvent OnMoveChange;
+
 
 
 const static int PLAYER_START_POS =350;
@@ -43,10 +51,17 @@ void Level_1_Init()
     player1->posComponent->setPosition(-PLAYER_START_POS, 0);
     player2->posComponent->setPosition(PLAYER_START_POS, 0);
 
-    player1->eventOnMoveChange = new EventHandler<Player, OnMoveEvent>(player1, &Player::OnMovementChange);
-    player1->eventOnMoveUpdate = new EventHandler<Player, OnMoveUpdateEvent>(player1, &Player::OnMovementUpdate);
+    player1->eventOnMoveChange = new EventHandler<Player, OnInputChangeEvent>(player1, &Player::OnMovementChange);
+    player1->eventOnMoveUpdate = new EventHandler<Player, UpdateEvent>(player1, &Player::OnMovementUpdate);
+
+    player2->eventOnMoveChange = new EventHandler<Player, OnInputChangeEvent>(player2, &Player::OnMovementChange);
+    player2->eventOnMoveUpdate = new EventHandler<Player, UpdateEvent>(player2, &Player::OnMovementUpdate);
+
+
+
     InputManager = InputEventManager();
     CollisionManager = CollisionEventManager();
+
 
     InputManager.registerEventHandler(player1->eventOnMoveChange);
     InputManager.registerEventHandler(player1->eventOnMoveUpdate);
@@ -72,15 +87,23 @@ static bool CheckCollision(Player* player, Ball* ball, AEContact* pResult)
 void Level_1_Update()
 {
     
-
     player1->Update();
-    player2->Update();
     ball->Update();
     if (CheckCollision(player1, ball, PlayerBallcollisionEvent.pResult))
+    {
+        CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+        CollisionManager.notifyEvent(&OnMoveChange);
+
+    }
+
+    if (CheckCollision(player2, ball, PlayerBallcollisionEvent.pResult))
+    {
         CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
 
-    if (CheckCollision(player2, ball, PlayerBallcollisionEvent.pResult))        
-        CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+
+    }
+
+
 
 
     // core keyboard shortcuts and GUI, do not delete this code!
