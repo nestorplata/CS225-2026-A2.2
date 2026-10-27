@@ -26,6 +26,7 @@
     <ClCompile Include="src\Framework\event_handlers.cc" />
     <ClCompile Include="src\Levels\Level 1.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Pong\LoopingEventManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputEventManager.h" />

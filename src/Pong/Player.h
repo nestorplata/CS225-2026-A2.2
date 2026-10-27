@@ -17,19 +17,17 @@ private:
 public:
 
 
-	EventHandler<Player, OnInputChangeEvent>* eventOnMoveChange;
 
-	EventHandler<Player, UpdateEvent>* eventOnMoveUpdate;
 
 	PositionComponent* posComponent = nullptr;
 	RenderComponent* renderComponent = nullptr;
-
+	//ControllerComponent* controllerCompoent = nullptr;
 	float width =25.f;
 	float height = 200.f;
 	AEVec2 simplePos;
 
 	AEVec2 velocity;
-	AEVec2 speed = AEVec2(0,200);
+	const AEVec2 MaxVelocity = AEVec2(0,200);
 
 	double dy = 0; // counter Changel;
 
@@ -82,15 +80,29 @@ public:
 
 	}
 
-	void OnMovementChange(OnInputChangeEvent* event)
+	void OnMovementChange(OnChangeEvent* event)
 	{
-		velocity = AEVec2(speed.x,
-			speed.y * ((int)event->MovingUp->IsActionHappening - (int)event->MovingDown->IsActionHappening));
+		velocity = AEVec2(MaxVelocity.x,
+			MaxVelocity.y * ((int)event->MovingUp->IsActionHappening - (int)event->MovingDown->IsActionHappening));
 	}
 
-	void OnMovementUpdate(UpdateEvent* event)
+	void OnMovementUpdate(UpdateOnEvent* event)
 	{
 		
+		Move();
+	}
+
+	float naive_lerp(float a, float b, float t)
+	{
+		return a + t * (b - a);
+	}
+	void OnFollowEvent(SetLoopFunctionEvent *loopEvent)
+	{
+		PositionComponent* positionToFollow = static_cast<PositionComponent*>(loopEvent->getEntityToFollow()->
+			getComponent("Position"));
+		float velocityY = posComponent->getY() - positionToFollow->getY();
+		if (velocityY < posComponent->getY()) velocity.y = velocityY;
+		else velocity.y = MaxVelocity.y;
 		Move();
 	}
 
@@ -99,8 +111,7 @@ public:
 
 	~Player()
 	{
-		delete( eventOnMoveChange);
-		delete(eventOnMoveUpdate);
+
 	}
 
 

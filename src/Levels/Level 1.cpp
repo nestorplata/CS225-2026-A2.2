@@ -13,23 +13,30 @@
 #include "../Pong/CollisionEventManager.h"
 
 int mode = 0;
-
+//Objects
 Player *player1;
 Player *player2;
 Ball* ball;
+
+//Managers
 InputEventManager InputManager;
 CollisionEventManager CollisionManager;
 
-OnInputChangeEvent onMoveEvent;
-UpdateEvent UpdateMoveEvent;
+//PlayerInputEvents
+OnChangeEvent onMoveEvent;
+UpdateOnEvent UpdateMoveEvent;
+
+//AI Events
+SetLoopFunctionEvent SetFollowEvent;
+
+//Collision Events
 OnCollisionEvent PlayerBallcollisionEvent;
 
-OnTriggerEvent StartFollowEvent;
-OnTriggerEvent DuringFollowEvent;
-OnTriggerEvent StopFollowEvent;
+//EventHandlers
+EventHandler<Player, OnChangeEvent>* handlerEventOnPlayerMoveChange;
+EventHandler<Player, UpdateOnEvent>* handlerEventOnPlayerMoveUpdate;
+EventHandler<Player, SetLoopFunctionEvent>* handlerEventOnCPUFollowSet;
 
-
-OnCollisionEvent OnMoveChange;
 
 
 
@@ -38,6 +45,50 @@ const static int PLAYER_START_POS =350;
 
 bool ShowFrameworkMenu();
 
+namespace CheckIfEvent
+{
+
+    bool CheckCollision(Player* player, Ball* ball, AEContact* pResult)
+    {
+        player->simplePos = AEVec2(player->posComponent->getX(), player->posComponent->getY());
+        ball->simplePos = AEVec2(ball->posComponent->getX(), ball->posComponent->getY());
+
+        return   AEStaticRectToStaticCircle(&player->simplePos,
+            player->width, player->height,
+            &ball->simplePos,
+            ball->Radius,
+            pResult);
+
+
+    }
+
+    void CheckAllCollisions()
+    {
+
+        if (CheckCollision(player1, ball, PlayerBallcollisionEvent.pResult))
+        {
+            PlayerBallcollisionEvent.ptr_object = player1;
+
+            CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+            SetFollowEvent.SetEntityToFollow(ball);
+            InputManager.notifyEvent(&SetFollowEvent);
+            InputManager.
+        }
+
+        if (CheckCollision(player2, ball, PlayerBallcollisionEvent.pResult))
+        {
+            PlayerBallcollisionEvent.ptr_object = player2;
+            CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+            SetFollowEvent.SetEntityToFollow(nullptr);
+            InputManager.notifyEvent(&SetFollowEvent);
+
+        }
+    }
+
+
+}
+
+using namespace CheckIfEvent;
 void Level_1_Load()
 {
 }
@@ -51,69 +102,53 @@ void Level_1_Init()
     player1->posComponent->setPosition(-PLAYER_START_POS, 0);
     player2->posComponent->setPosition(PLAYER_START_POS, 0);
 
-    player1->eventOnMoveChange = new EventHandler<Player, OnInputChangeEvent>(player1, &Player::OnMovementChange);
-    player1->eventOnMoveUpdate = new EventHandler<Player, UpdateEvent>(player1, &Player::OnMovementUpdate);
-
-    player2->eventOnMoveChange = new EventHandler<Player, OnInputChangeEvent>(player2, &Player::OnMovementChange);
-    player2->eventOnMoveUpdate = new EventHandler<Player, UpdateEvent>(player2, &Player::OnMovementUpdate);
-
-
+    handlerEventOnPlayerMoveChange = new EventHandler<Player, OnChangeEvent>(player1, &Player::OnMovementChange);
+    handlerEventOnPlayerMoveUpdate = new EventHandler<Player, UpdateOnEvent>(player1, &Player::OnMovementUpdate);
+    handlerEventOnCPUFollowSet = new EventHandler<Player, SetLoopFunctionEvent>(player2, &Player::OnFollowEvent);
 
     InputManager = InputEventManager();
     CollisionManager = CollisionEventManager();
 
+    
+    InputManager.SetBehaviour(KeyboardInput);
+    CollisionManager.SetBehaviour(CheckAllCollisions);
+    
 
-    InputManager.registerEventHandler(player1->eventOnMoveChange);
-    InputManager.registerEventHandler(player1->eventOnMoveUpdate);
+    InputManager.registerEventHandler(handlerEventOnPlayerMoveChange);
+    InputManager.registerEventHandler(handlerEventOnPlayerMoveUpdate);
+    InputManager.registerEventHandler(handlerEventOnCPUFollowSet);
+
     CollisionManager.registerEventHandler(ball->EventHandlerOnCollisionRect);
 
-    ball->posComponent;
-
 }
 
-static bool CheckCollision(Player* player, Ball* ball, AEContact* pResult)
+
+void KeyboardInput()
 {
-    player->simplePos = AEVec2(player->posComponent->getX(), player->posComponent->getY());
-    ball->simplePos = AEVec2(ball->posComponent->getX(), ball->posComponent->getY());
+    //std::cout << AEInputKeyTriggered('W');
+    if (AEInputKeyChange('W', onMoveEvent.MovingUp)) InputManager.notifyEvent(&onMoveEvent);
+    if (AEInputKeyChange('S', onMoveEvent.MovingDown)) InputManager.notifyEvent(&onMoveEvent);
 
-    return   AEStaticRectToStaticCircle(&player->simplePos,
-        player->width, player->height,
-        &ball->simplePos,
-        ball->Radius, 
-        pResult);
-
-
+    if (AEInputKeyPressed('W') || AEInputKeyPressed('S')) InputManager.notifyEvent(&UpdateMoveEvent);
+    if (AEInputKeyTriggered('R'))
+        AESetGameStateNext(AE_GS_RESTART);
+    if (AEInputKeyTriggered('Q') && AEInputKeyPressed(AE_KEY_CTRL))
+        AESetGameStateNext(AE_GS_QUIT);
 }
+
 void Level_1_Update()
 {
+    // core keyboard shortcuts and GUI, do not delete this code!
+    bool guiActive = ShowFrameworkMenu();
+
+    CollisionManager.update();
+    InputManager.update();
     
     player1->Update();
     ball->Update();
-    if (CheckCollision(player1, ball, PlayerBallcollisionEvent.pResult))
-    {
-        CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
-        CollisionManager.notifyEvent(&OnMoveChange);
-
-    }
-
-    if (CheckCollision(player2, ball, PlayerBallcollisionEvent.pResult))
-    {
-        CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
+    player2->Update();
 
 
-    }
-
-
-
-
-    // core keyboard shortcuts and GUI, do not delete this code!
-        KeyboardInput();
-        bool guiActive = ShowFrameworkMenu();
-
-
-
-
-    
 }
 
 void Level_1_Render()
@@ -132,6 +167,9 @@ void Level_1_Free()
     delete(player1);
     delete(player2);
     delete(ball);
+    delete(handlerEventOnPlayerMoveChange);
+    delete(handlerEventOnPlayerMoveUpdate);
+    delete(handlerEventOnCPUFollowSet);
 
 }
 
@@ -139,35 +177,6 @@ void Level_1_Unload()
 {
     AEInputKeyPressed('R');
     AEInputKeyTriggered('R');
-}
-
-
-bool AEInputKeyChange(const char key, Action* ActionType)
-{
-    if (AEInputKeyTriggered(key))
-    {
-        ActionType->IsActionHappening = true;
-        return true;
-
-    }
-    else if (ActionType->IsActionHappening && !AEInputKeyPressed(key))
-    {
-        ActionType->IsActionHappening = false;
-        return true;
-    }
-    return false;
-}
-void KeyboardInput()
-{
-    //std::cout << AEInputKeyTriggered('W');
-    if (AEInputKeyChange('W', onMoveEvent.MovingUp)) InputManager.notifyEvent(&onMoveEvent);
-    if (AEInputKeyChange('S', onMoveEvent.MovingDown)) InputManager.notifyEvent(&onMoveEvent);
-
-    if (AEInputKeyPressed('W') || AEInputKeyPressed('S')) InputManager.notifyEvent(&UpdateMoveEvent);
-    if (AEInputKeyTriggered('R'))
-        AESetGameStateNext(AE_GS_RESTART);
-    if (AEInputKeyTriggered('Q') && AEInputKeyPressed(AE_KEY_CTRL))
-        AESetGameStateNext(AE_GS_QUIT);
 }
 
 bool ShowFrameworkMenu()

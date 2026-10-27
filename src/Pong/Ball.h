@@ -20,7 +20,7 @@ public:
 
 	float Radius = 20.f;
 
-	AEVec2 velocity = AEVec2 (100,200);
+	AEVec2 velocity = AEVec2 (-100,200);
 	AEVec2 simplePos;
 	AEVec2 speed = AEVec2(100, 200);
 

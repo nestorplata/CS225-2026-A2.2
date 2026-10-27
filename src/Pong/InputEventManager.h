@@ -1,21 +1,15 @@
 #pragma once
-#include "..\Framework\event_handlers.hh"
+#include "..\Pong\LoopingEventManager.h"
 #include "Singleton.h"
 
 
 
-class InputEventManager : public EventManager
+class InputEventManager : public LoopingEventManager 
 {
-private:
+public:
 
 public:
-	InputEventManager() {};
-	
 
-	void update() override
-	{
-
-	}
 };
 
 
@@ -24,25 +18,26 @@ struct Action
 	bool IsActionHappening;
 };
 
-class OnInputChangeEvent : public Event
+class OnChangeEvent : public Event
 {
 private:
 
 public:
+	void* ptr_Object; //reference to Object
 	Action* MovingUp;
 	Action* MovingDown;
 
 
 public:
 
-	OnInputChangeEvent()
+	OnChangeEvent()
 	{
 		MovingUp = new Action();
 		MovingDown = new Action();
 	}
 
 
-	~OnInputChangeEvent()
+	~OnChangeEvent()
 	{
 		delete(MovingUp);
 		delete(MovingDown);
@@ -50,6 +45,34 @@ public:
 
 };
 
-class UpdateEvent : public Event
+static bool AEInputKeyChange(const char key, Action* ActionType)
 {
+	if (AEInputKeyTriggered(key))
+	{
+		ActionType->IsActionHappening = true;
+		return true;
+
+	}
+	else if (ActionType->IsActionHappening && !AEInputKeyPressed(key))
+	{
+		ActionType->IsActionHappening = false;
+		return true;
+	}
+	return false;
+}
+
+
+class UpdateOnEvent : public Event
+{
+};
+
+class SetLoopFunctionEvent : public Event
+{
+	Entity *EntityToFollow;
+public:
+
+	void SetEntityToFollow(Entity* EntityToFollow) { this->EntityToFollow = EntityToFollow; }
+	Entity* getEntityToFollow() { return EntityToFollow; }
+
+
 };

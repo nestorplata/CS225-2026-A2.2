@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Framework\event_handlers.hh"
+#include "..\Pong\LoopingEventManager.h"
 #include "..\Pong\Singleton.h"
 
 class OnCollisionEvent :public Event
@@ -7,10 +7,10 @@ class OnCollisionEvent :public Event
 public:
 	std::string ObjectName;
 	AEContact* pResult = nullptr;
+	void* ptr_object = nullptr;
 public:
 	OnCollisionEvent()
 	{
-		Event();
 		pResult = new AEContact();
 	}
 };
@@ -22,13 +22,13 @@ public:
 };
 
 
-class CollisionEventManager : public EventManager
+class CollisionEventManager : public LoopingEventManager
 {
 private:
 
+	
+
 public:
 	CollisionEventManager() {};
-
-	void update() override{};
 
 };
