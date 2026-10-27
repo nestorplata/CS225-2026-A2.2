@@ -1,7 +1,7 @@
 #pragma once
-#include "..\Pong\LoopingEventManager.h"
+#include<AEEngine.h>
+#include "..\Pong\LoopingEventManager.hh"
 #include "..\Framework\entity.hh"
-#include "Singleton.h"
 
 
 

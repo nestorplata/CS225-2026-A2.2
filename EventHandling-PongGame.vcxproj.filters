@@ -34,7 +34,13 @@
     <ClCompile Include="src\Components\render_component.cc">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pong\LoopingEventManager.h">
+    <ClCompile Include="src\Pong\LoopingEventManager.hh">
+      <Filter>Pong</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pong\Ball.cpp">
+      <Filter>Pong</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pong\Player.cpp">
       <Filter>Pong</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,18 +66,19 @@
     <ClInclude Include="src\Framework\event_handlers.hh">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="InputEventManager.h" />
-    <ClInclude Include="src\Pong\CollisionEvents.h">
+    <ClInclude Include="src\Pong\CollisionEvents.hh">
       <Filter>Pong</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pong\InputEvents.h">
+    <ClInclude Include="src\Pong\InputEvents.hh">
       <Filter>Pong</Filter>
     </ClInclude>
     <ClInclude Include="src\Pong\Player.h">
       <Filter>Pong</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pong\Singleton.h" />
-    <ClInclude Include="src\Pong\Ball.h">
+    <ClInclude Include="src\Pong\Ball.hh">
+      <Filter>Pong</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pong\Singleton.h">
       <Filter>Pong</Filter>
     </ClInclude>
   </ItemGroup>

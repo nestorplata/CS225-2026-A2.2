@@ -6,11 +6,11 @@
 #include "Level 1.h"
 
 #include "../Pong/Player.h"
-#include "../Pong/Ball.h"
+#include "../Pong/Ball.hh"
 #include "../Framework/event.hh"
 #include "../Framework/event_handlers.hh"
-#include "../Pong/InputEvents.h"
-#include "../Pong/CollisionEvents.h"
+#include "../Pong/InputEvents.hh"
+#include "../Pong/CollisionEvents.hh"
 
 int mode = 0;
 

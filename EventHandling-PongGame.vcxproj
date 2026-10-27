@@ -26,10 +26,11 @@
     <ClCompile Include="src\Framework\event_handlers.cc" />
     <ClCompile Include="src\Levels\Level 1.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Pong\LoopingEventManager.h" />
+    <ClCompile Include="src\Pong\Ball.cpp" />
+    <ClCompile Include="src\Pong\LoopingEventManager.hh" />
+    <ClCompile Include="src\Pong\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InputEventManager.h" />
     <ClInclude Include="src\Components\position_component.hh" />
     <ClInclude Include="src\Components\render_component.hh" />
     <ClInclude Include="src\Framework\component.hh" />
@@ -37,9 +38,9 @@
     <ClInclude Include="src\Framework\event.hh" />
     <ClInclude Include="src\Framework\event_handlers.hh" />
     <ClInclude Include="src\Levels\Level 1.h" />
-    <ClInclude Include="src\Pong\Ball.h" />
-    <ClInclude Include="src\Pong\CollisionEvents.h" />
-    <ClInclude Include="src\Pong\InputEvents.h" />
+    <ClInclude Include="src\Pong\Ball.hh" />
+    <ClInclude Include="src\Pong\CollisionEvents.hh" />
+    <ClInclude Include="src\Pong\InputEvents.hh" />
     <ClInclude Include="src\Pong\Player.h" />
     <ClInclude Include="src\Pong\Singleton.h" />
   </ItemGroup>

@@ -1,4 +1,8 @@
 #pragma once
+
+//Singleton template class
+// taken from https://medium.com/@BobBrownConsulting/implementing-a-singleton-pattern-with-templates-3bc84c1090f6
+//this is something I do, mostly for singletons, as polymrphism can be done simple using one class;
 template <class _class_>
 class Singleton
 {

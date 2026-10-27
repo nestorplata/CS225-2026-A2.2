@@ -3,8 +3,8 @@
 #include "../Components/position_component.hh"
 #include "../Components/render_component.hh"
 #include "../Framework/event_handlers.hh"
-#include "../Pong/InputEvents.h"
-#include "../Pong/CollisionEvents.h"
+#include "../Pong/InputEvents.hh"
+#include "../Pong/CollisionEvents.hh"
 
 #include <AEEngine.h>
 
@@ -37,90 +37,26 @@ public:
 
 public:
 
-	Player()
-	{
-		playableRange = AEGetSysWindowHeight() / 2 - height/2;
+	Player();
 
-		posComponent = new PositionComponent(100, 100);
-		renderComponent = new RenderComponent();
-		Init();
-		
-	}
-
-	void  Init()
-	{
-		//dy = posComponent->getY();
-		attach(posComponent);
-		attach(renderComponent);
-	}
-
-	void Update() override
-	{
-		Entity::Update();
-		
-
-	}
-	void Draw() override
-	{
-		//renderComponent->Draw();
-		AEGfxRect(posComponent->getX(), posComponent->getY(), 0, width, height, AE_COLORS_RED);
-	}
+	void  Init();
+	void Update() override;
+	void Draw() override;
 	
 	//generic apply movement Formula
-	void Move()
-	{
+	void Move();
 
-		dy += AEGetFrameTime() * velocity.y;
-		if (!(playableRange > posComponent->getY() + dy && -playableRange < posComponent->getY() + dy))
-		{
-			dy = 0;
-		}
-		else if ((int)dy  !=0)
-		{
-			posComponent->setPosition(posComponent->getX(), posComponent->getY() + (int)dy);
-			dy = 0;
-		}
+	void OnMovementSet(OnSetEvent* event);
 
-	}
-
-	void OnMovementSet(OnSetEvent* event)
-	{
-		velocity = AEVec2(MaxVelocity.x,
-			MaxVelocity.y * ((int)event->MovingUp->IsActionHappening - (int)event->MovingDown->IsActionHappening));
-	}
-
-	void OnMovementUpdate(UpdateOnEvent* event)
-	{
-		
-		Move();
-	}
+	void OnMovementUpdate(UpdateOnEvent* event);
 
 	//Sets the characther to follow
-	void OnFollowSet(SetLoopFunctionEvent *loopEvent)
-	{
-		if (loopEvent->getEntityToFollow())
-		{
-			positionToFollow = dynamic_cast<PositionComponent*>(loopEvent->getEntityToFollow()->
-				getComponent("Position"));
-		}
-		else { positionToFollow = nullptr; }
-
-	}
+	void OnFollowSet(SetLoopFunctionEvent* loopEvent);
 
 	//Follows "positionToFollow"
-	void OnFollowUpdate(LoopFunctionEvent *loopEvent)
-	{
-		velocity.y = AEVec2::Lerp(AEVec2(0, posComponent->getY()), AEVec2(0, positionToFollow->getY()), 5.0f).y;
-		if (velocity.y > MaxVelocity.y)velocity.y = MaxVelocity.y;
-		if (velocity.y < -MaxVelocity.y)velocity.y = -MaxVelocity.y;
+	void OnFollowUpdate(LoopFunctionEvent* loopEvent);
 
-		Move();
-	}
-
-	~Player()
-	{
-
-	}
+	~Player();
 
 
 };
