@@ -1,17 +1,20 @@
 #pragma once
-#include "..\Framework\event_handlers.hh"
 #include <algorithm>
+#include <vector>
+#include <typeinfo>
+#include "..\Framework\event_handlers.hh"
+#include "..\Framework\event.hh"
 
 class LoopingEventManager :public EventManager
 {
 	
 
 private:
-	std::vector<Event*> LoopingEvents;
+	std::vector<Event*> LoopingEvents ;
 	void (*Behaviour)(void) = nullptr;
 public:
 	LoopingEventManager() {};
-	~LoopingEventManager() { LoopingEvents.clear(); }
+	//~LoopingEventManager() { LoopingEvents.clear(); }
 	
 	bool SetBehaviour(void (*Behaviour)(void))
 	{
@@ -23,12 +26,18 @@ public:
 		LoopingEvents.push_back(event);
 	}
 
-	template<typename EVT>
-	void NotifyEndLoopingEvent()
+
+	void NotifyEndLoopingEvent(Event* event)
 	{
-		LoopingEvents.erase(std::find_if(LoopingEvents.begin(), LoopingEvents.end(),
-			[&](Event* p) { return dynamic_cast<EVT>(p); }));
+		std::vector<Event*>::iterator it = std::find_if(LoopingEvents.begin(), LoopingEvents.end(),
+			[&](Event* other_item)
+			{
+				//classic Type Id Comparasion
+				return typeid(other_item).name() == typeid(event).name();
+			});
+		if(LoopingEvents.size())LoopingEvents.erase(it);
 	}
+
 
 	
 	void update() override
@@ -38,6 +47,6 @@ public:
 		{
 			notifyEvent(events);
 		}
-	};
+	}
 
 };

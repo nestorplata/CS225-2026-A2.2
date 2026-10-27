@@ -4,13 +4,6 @@
 
 
 
-class InputEventManager : public LoopingEventManager 
-{
-public:
-
-public:
-
-};
 
 
 struct Action
@@ -74,5 +67,10 @@ public:
 	void SetEntityToFollow(Entity* EntityToFollow) { this->EntityToFollow = EntityToFollow; }
 	Entity* getEntityToFollow() { return EntityToFollow; }
 
+
+};
+
+class LoopFunctionEvent : public Event
+{
 
 };

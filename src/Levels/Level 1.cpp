@@ -19,8 +19,8 @@ Player *player2;
 Ball* ball;
 
 //Managers
-InputEventManager InputManager;
-CollisionEventManager CollisionManager;
+LoopingEventManager InputManager;
+LoopingEventManager CollisionManager;
 
 //PlayerInputEvents
 OnChangeEvent onMoveEvent;
@@ -28,14 +28,18 @@ UpdateOnEvent UpdateMoveEvent;
 
 //AI Events
 SetLoopFunctionEvent SetFollowEvent;
+LoopFunctionEvent LoopFollowEvent;
 
 //Collision Events
 OnCollisionEvent PlayerBallcollisionEvent;
 
 //EventHandlers
-EventHandler<Player, OnChangeEvent>* handlerEventOnPlayerMoveChange;
+EventHandler<Player, OnChangeEvent>* handlerEventOnPlayerMoveSet;
 EventHandler<Player, UpdateOnEvent>* handlerEventOnPlayerMoveUpdate;
+
+//CPU
 EventHandler<Player, SetLoopFunctionEvent>* handlerEventOnCPUFollowSet;
+EventHandler<Player, LoopFunctionEvent>* handlerEventOnCPUFollowUpdate;
 
 
 
@@ -72,7 +76,8 @@ namespace CheckIfEvent
             CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
             SetFollowEvent.SetEntityToFollow(ball);
             InputManager.notifyEvent(&SetFollowEvent);
-            InputManager.
+            InputManager.notifyStartLoopingEvent(&LoopFollowEvent);
+
         }
 
         if (CheckCollision(player2, ball, PlayerBallcollisionEvent.pResult))
@@ -81,6 +86,8 @@ namespace CheckIfEvent
             CollisionManager.notifyEvent(&PlayerBallcollisionEvent);
             SetFollowEvent.SetEntityToFollow(nullptr);
             InputManager.notifyEvent(&SetFollowEvent);
+
+            InputManager.NotifyEndLoopingEvent(&LoopFollowEvent);
 
         }
     }
@@ -102,21 +109,23 @@ void Level_1_Init()
     player1->posComponent->setPosition(-PLAYER_START_POS, 0);
     player2->posComponent->setPosition(PLAYER_START_POS, 0);
 
-    handlerEventOnPlayerMoveChange = new EventHandler<Player, OnChangeEvent>(player1, &Player::OnMovementChange);
+    handlerEventOnPlayerMoveSet = new EventHandler<Player, OnChangeEvent>(player1, &Player::OnMovementSet);
     handlerEventOnPlayerMoveUpdate = new EventHandler<Player, UpdateOnEvent>(player1, &Player::OnMovementUpdate);
-    handlerEventOnCPUFollowSet = new EventHandler<Player, SetLoopFunctionEvent>(player2, &Player::OnFollowEvent);
+    handlerEventOnCPUFollowSet = new EventHandler<Player, SetLoopFunctionEvent>(player2, &Player::OnFollowSet);
+    handlerEventOnCPUFollowUpdate = new EventHandler<Player, LoopFunctionEvent>(player2, &Player::OnFollowUpdate);
 
-    InputManager = InputEventManager();
-    CollisionManager = CollisionEventManager();
+    InputManager = LoopingEventManager();
+    CollisionManager = LoopingEventManager();
 
     
     InputManager.SetBehaviour(KeyboardInput);
     CollisionManager.SetBehaviour(CheckAllCollisions);
     
 
-    InputManager.registerEventHandler(handlerEventOnPlayerMoveChange);
+    InputManager.registerEventHandler(handlerEventOnPlayerMoveSet);
     InputManager.registerEventHandler(handlerEventOnPlayerMoveUpdate);
     InputManager.registerEventHandler(handlerEventOnCPUFollowSet);
+    InputManager.registerEventHandler(handlerEventOnCPUFollowUpdate);
 
     CollisionManager.registerEventHandler(ball->EventHandlerOnCollisionRect);
 
@@ -167,7 +176,7 @@ void Level_1_Free()
     delete(player1);
     delete(player2);
     delete(ball);
-    delete(handlerEventOnPlayerMoveChange);
+    delete(handlerEventOnPlayerMoveSet);
     delete(handlerEventOnPlayerMoveUpdate);
     delete(handlerEventOnCPUFollowSet);
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "..\Pong\LoopingEventManager.h"
-#include "..\Pong\Singleton.h"
 
 class OnCollisionEvent :public Event
 {
@@ -21,14 +20,3 @@ public:
 	PositionComponent* posComponent;
 };
 
-
-class CollisionEventManager : public LoopingEventManager
-{
-private:
-
-	
-
-public:
-	CollisionEventManager() {};
-
-};

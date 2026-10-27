@@ -12,7 +12,7 @@
 class Player  : public Entity{
 private:
 	int playableRange;
-
+	PositionComponent* positionToFollow;
 
 public:
 
@@ -80,7 +80,7 @@ public:
 
 	}
 
-	void OnMovementChange(OnChangeEvent* event)
+	void OnMovementSet(OnChangeEvent* event)
 	{
 		velocity = AEVec2(MaxVelocity.x,
 			MaxVelocity.y * ((int)event->MovingUp->IsActionHappening - (int)event->MovingDown->IsActionHappening));
@@ -92,19 +92,26 @@ public:
 		Move();
 	}
 
-	float naive_lerp(float a, float b, float t)
+	void OnFollowSet(SetLoopFunctionEvent *loopEvent)
 	{
-		return a + t * (b - a);
+		if (loopEvent->getEntityToFollow())
+		{
+			positionToFollow = dynamic_cast<PositionComponent*>(loopEvent->getEntityToFollow()->
+				getComponent("Position"));
+		}
+		else { positionToFollow = nullptr; }
+
 	}
-	void OnFollowEvent(SetLoopFunctionEvent *loopEvent)
+
+	void OnFollowUpdate(LoopFunctionEvent *loopEvent)
 	{
-		PositionComponent* positionToFollow = static_cast<PositionComponent*>(loopEvent->getEntityToFollow()->
-			getComponent("Position"));
-		float velocityY = posComponent->getY() - positionToFollow->getY();
-		if (velocityY < posComponent->getY()) velocity.y = velocityY;
-		else velocity.y = MaxVelocity.y;
+		velocity.y = AEVec2::Lerp(AEVec2(0, posComponent->getY()), AEVec2(0, positionToFollow->getY()), 5.0f).y;
+		if (velocity.y > MaxVelocity.y)velocity.y = MaxVelocity.y;
+		if (velocity.y < -MaxVelocity.y)velocity.y = -MaxVelocity.y;
+
 		Move();
 	}
+
 
 
 
