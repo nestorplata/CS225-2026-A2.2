@@ -3,12 +3,9 @@
 #include "../Components/position_component.hh"
 #include "../Framework/entity.hh"
 #include "../Components/render_component.hh"
-#include "../Pong/CollisionEventManager.h"
+#include "../Pong/CollisionEvents.h"
 
-static AEVec2 multiply(AEVec2 first, AEVec2 second)
-{
-	return AEVec2(first.x * second.x, first.y * second.y);
-}
+
 
 
 class Ball : public Entity
@@ -20,10 +17,8 @@ public:
 
 	float Radius = 20.f;
 
-	AEVec2 velocity = AEVec2 (-100,200);
+	AEVec2 velocity = AEVec2 (-150,100);
 	AEVec2 simplePos;
-	AEVec2 speed = AEVec2(100, 200);
-
 	AEVec2 delta = AEVec2().ZERO;
 	AEVec2 playableRange = AEVec2().ZERO;
 
@@ -54,15 +49,12 @@ public:
 		Entity::Update();
 		Move();
 		
-		//check Collision
+		//Collision Checked in CollisionEventManager
 
 	}
 	void Draw() override
 	{
 		AEGfxCircle(posComponent->getX(), posComponent->getY(), Radius, AE_COLORS_BLUE, 12);
-
-
-
 	}
 
 	void Move()
@@ -91,7 +83,7 @@ public:
 
 	}
 
-
+	//OnCollision Event, reflect velocity Vector in respect with the collided object normal
 	void OnRectCollision(OnCollisionEvent* event)
 	{
 			velocity -= event->pResult->mNormal*2*(velocity.Dot(event->pResult->mNormal));

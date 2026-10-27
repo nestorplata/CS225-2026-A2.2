@@ -1,6 +1,12 @@
 #pragma once
+#include <iostream>
+#include <AEEngine.h>
 #include "..\Pong\LoopingEventManager.h"
+#include "..\Components\position_component.hh"
 
+
+//simple Collision Event
+//stores collision information
 class OnCollisionEvent :public Event
 {
 public:
@@ -12,11 +18,10 @@ public:
 	{
 		pResult = new AEContact();
 	}
+	~OnCollisionEvent()
+	{
+		delete (pResult);
+	}
 };
 
-class OnTriggerEvent :public Event
-{
-public:
-	PositionComponent* posComponent;
-};
 

@@ -38,8 +38,8 @@
     <ClInclude Include="src\Framework\event_handlers.hh" />
     <ClInclude Include="src\Levels\Level 1.h" />
     <ClInclude Include="src\Pong\Ball.h" />
-    <ClInclude Include="src\Pong\CollisionEventManager.h" />
-    <ClInclude Include="src\Pong\InputEventManager.h" />
+    <ClInclude Include="src\Pong\CollisionEvents.h" />
+    <ClInclude Include="src\Pong\InputEvents.h" />
     <ClInclude Include="src\Pong\Player.h" />
     <ClInclude Include="src\Pong\Singleton.h" />
   </ItemGroup>

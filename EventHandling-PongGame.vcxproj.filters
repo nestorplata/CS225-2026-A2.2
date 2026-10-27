@@ -61,10 +61,10 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="InputEventManager.h" />
-    <ClInclude Include="src\Pong\CollisionEventManager.h">
+    <ClInclude Include="src\Pong\CollisionEvents.h">
       <Filter>Pong</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pong\InputEventManager.h">
+    <ClInclude Include="src\Pong\InputEvents.h">
       <Filter>Pong</Filter>
     </ClInclude>
     <ClInclude Include="src\Pong\Player.h">

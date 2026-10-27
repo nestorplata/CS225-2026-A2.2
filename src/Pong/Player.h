@@ -3,12 +3,13 @@
 #include "../Components/position_component.hh"
 #include "../Components/render_component.hh"
 #include "../Framework/event_handlers.hh"
-#include "../Pong/InputEventManager.h"
-#include "../Pong/CollisionEventManager.h"
+#include "../Pong/InputEvents.h"
+#include "../Pong/CollisionEvents.h"
 
 #include <AEEngine.h>
 
-
+//Player class
+//didn't want to implement Enemy Class
 class Player  : public Entity{
 private:
 	int playableRange;
@@ -16,19 +17,20 @@ private:
 
 public:
 
-
-
-
+	// simplifiers.
 	PositionComponent* posComponent = nullptr;
 	RenderComponent* renderComponent = nullptr;
-	//ControllerComponent* controllerCompoent = nullptr;
+
+	//A controller would have been perfect to implement 
+
+	//Rect
 	float width =25.f;
 	float height = 200.f;
 	AEVec2 simplePos;
 
+	//Movement
 	AEVec2 velocity;
-	const AEVec2 MaxVelocity = AEVec2(0,200);
-
+	const AEVec2 MaxVelocity = AEVec2(0, 200);
 	double dy = 0; // counter Changel;
 
 
@@ -64,6 +66,7 @@ public:
 		AEGfxRect(posComponent->getX(), posComponent->getY(), 0, width, height, AE_COLORS_RED);
 	}
 	
+	//generic apply movement Formula
 	void Move()
 	{
 
@@ -80,7 +83,7 @@ public:
 
 	}
 
-	void OnMovementSet(OnChangeEvent* event)
+	void OnMovementSet(OnSetEvent* event)
 	{
 		velocity = AEVec2(MaxVelocity.x,
 			MaxVelocity.y * ((int)event->MovingUp->IsActionHappening - (int)event->MovingDown->IsActionHappening));
@@ -92,6 +95,7 @@ public:
 		Move();
 	}
 
+	//Sets the characther to follow
 	void OnFollowSet(SetLoopFunctionEvent *loopEvent)
 	{
 		if (loopEvent->getEntityToFollow())
@@ -103,6 +107,7 @@ public:
 
 	}
 
+	//Follows "positionToFollow"
 	void OnFollowUpdate(LoopFunctionEvent *loopEvent)
 	{
 		velocity.y = AEVec2::Lerp(AEVec2(0, posComponent->getY()), AEVec2(0, positionToFollow->getY()), 5.0f).y;
@@ -111,10 +116,6 @@ public:
 
 		Move();
 	}
-
-
-
-
 
 	~Player()
 	{
